@@ -38,6 +38,9 @@ export class Router {
      * router instance using the 'this' keyword. Substitute 'home' for the variable
      * page
      */
+
+    this[page] = pageFunc;
+
   }
 
   /**
@@ -65,5 +68,32 @@ export class Router {
      *     and URL + hash to history
      *  4. Finally, call the stored function for the given page
      */
+
+
+    
+    if(this[page] == undefined){
+      console.log("Broken function: " + this[page]);
+      return;
+    }
+
+    let hash;
+    if(page == 'home'){
+      hash = '';
+    }
+    else{
+      hash = '#' + page;
+    }
+
+
+    // Doc in main: * (Hint - you should be passing in which page you are on
+    // * in your Router when you push your state so you can access that page
+    // * info in your popstate function)
+    
+    if (!statePopped && (window.location.hash != hash)) {
+      history.pushState({page: page}, page, hash); //TODO Is state correct?
+      console.log("state pushed: " + page)
+    }
+
+    this[page](); 
   }
 }

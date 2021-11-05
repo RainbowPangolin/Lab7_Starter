@@ -50,15 +50,26 @@ self.addEventListener('fetch', function (event) {
    * Create a function as outlined above
    */
    event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
-        // Cache hit - return response
-        if (response) {
+    caches.open('mysite-dynamic').then(function(cache) {
+      return cache.match(event.request).then(function (response) {
+        return response || fetch(event.request).then(function(response) {
+          cache.put(event.request, response.clone());
           return response;
-        }
-        return fetch(event.request);
-      }
-    )
+        });
+      });
+    })
   );
+
+  //  event.respondWith(
+  //   caches.match(event.request)
+  //     .then(function(response) {
+  //       // Cache hit - return response
+  //       if (response) {
+  //         return response;
+  //       }
+  //       return fetch(event.request);
+  //     }
+  //   )
+  // );
 });
 
